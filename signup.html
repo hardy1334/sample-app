@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sample App</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142279061-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-142279061-1');
+    </script>
+
+</head>
+
+<body>
+    <center>
+        <div class="container">
+            <img src="https://media.tenor.com/images/47360788d9ff15a6f694369a3ff9137b/tenor.gif" width="100" height="100" alt="verified" />
+            <span class="container">
+                <h3>Congrats, <b>
+                        <h1 id="user" style="color: #66cc00"></h1>
+                    </b> You have successfully signed up</h3>
+            </span>
+
+        </div>
+
+    </center>
+
+</body>
+<script>
+    window.addEventListener('load', function() {
+        document.getElementById("user").innerHTML = localStorage.getItem("new_user").toLocaleUpperCase();
+
+        localStorage.clear();
+    })
+</script>
+
+</html>

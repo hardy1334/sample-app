@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sample App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#262626" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Dosis|Noto+Sans+JP|Open+Sans+Condensed:300&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="iphone_x center shadow big_container">
+            <div id="2_page" class="iphone_2page ">
+                <div id="login_page" class="iphone_x center ">
+                    <div class="content_container ">
+                        <img src="/static/truecaller-logo-blue.png" alt="truecaller" width="100" /><br />
+                        <center>
+                            <span>
+                                <b id="skip-message" hidden style="color: red">Access Denied by the user</b>
+                            </span>
+                            <br />
+                        </center>
+                        <br />
+                        <form action="/signin">
+                            <div class="input_line">
+                                <input class="input_content" id="phoneNum" type="text" @click="signInWithTruecaller()" required autofocus />
+                                <label for="email">Phone No</label>
+                            </div>
+                            <div class="input_line">
+                                <input class="input_content" id="firstNam" type="text" required />
+                                <label for="pass">Name</label>
+                            </div>
+                            <div hidden id="gif">
+                                <img class="p-3" src="https://www.voya.ie/Interface/Icons/LoadingBasketContents.gif" width="120" height="120" alt="loading......." />
+                                <small><b>Please Wait....</b></small>
+                            </div>
+
+                            <input type="submit" class="btn btn-primary sign_up" value="Log in" />
+                        </form>
+
+
+                        <div class="divider">
+                            <hr />
+                            <span>Or</span>
+                            <hr />
+                        </div>
+                        <span id="store-result" hidden></span>
+                        <div class="footer_line">
+                            <span class="footer_text">Don’t have an account?</span>
+                            <a class="footer_link" style="color:#0087ff" id="signup" @click="signupPage()">Sign
+                                up</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="signup_page" class="iphone_x center"></div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/library.js"></script>
+
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            methods: {
+
+                signInWithTruecaller() {
+                    let requestId = checkAppPresent('eNIxJ6d88623afc4b403d80d9a29e6a0d1726', 'Hardik', 'English', 'verify', 'useAnotherNum')
+                    setTimeout(function() {
+                        let appPresent = getUserData(requestId, 5, '/user/data', 1000);
+                        console.log(appPresent)
+                            // console.log(appPresent.email)
+                    }, 3000);
+                }
+            }
+        })
+
+
+
+        /*   let vm = new Vue({
+               el: "#app",
+               methods: {
+                   signupPage() {
+                       result = "";
+                       let makeid = length => {
+                           var characters =
+                               "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                           var charactersLength = characters.length;
+                           for (var i = 0; i < length; i++) {
+                               result += characters.charAt(
+                                   Math.floor(Math.random() * charactersLength)
+                               );
+                           }
+                           return result;
+                       };
+                       console.log(makeid(15));
+                       window.location =
+                           `intent://truesdk/web_verify?requestNonce=${result}` +
+                           "&partnerKey=NceOJ355344f91fc741e693f7e0f1671bd2a2&partnerName=TrueShop&lang=English&title=Default&skipOption=skip#Intent;scheme=truecallersdk;end";
+                       setTimeout(function() {
+                           $.getJSON(`/user/data/${result}`, function(data) {
+                               localStorage.setItem("new_user", data[0].name.first)
+                               window.location = "/signup"
+                           })
+                       }, 3000)
+                   },
+                   signInWithTruecaller() {
+                       result = "";
+                       let makeid = length => {
+                           var characters =
+                               "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                           var charactersLength = characters.length;
+                           for (var i = 0; i < length; i++) {
+                               result += characters.charAt(
+                                   Math.floor(Math.random() * charactersLength)
+                               );
+                           }
+                           return result;
+                       };
+                       console.log(makeid(15));
+                       document.getElementById("store-result").value = result;
+                       if ($.browser.name === "chrome") {
+                           console.log("Chrome Found");
+                           window.location =
+                               `intent://truesdk/web_verify?requestNonce=${result}` +
+                               "&partnerKey=NceOJ355344f91fc741e693f7e0f1671bd2a2&partnerName=TrueShop&lang=English&title=Default&skipOption=skip#Intent;scheme=truecallersdk;end";
+                           setTimeout(function() {
+                               if (document.hasFocus()) {
+                                   alert("Please install Truecaller App first");
+                               } else {
+                                   let counter = 1;
+
+                                   function getData() {
+                                       if (counter <= 5) {
+                                           $.getJSON(`/user/data/${result}`, function(data) {
+                                               if (data[0].status) {
+                                                   document.getElementById(
+                                                       "skip-message"
+                                                   ).hidden = false;
+                                                   document.getElementsByTagName(
+                                                           "html")[0].style
+                                                       .opacity = "1";
+                                                   document.getElementById("gif")
+                                                       .hidden = true;
+                                               } else if (data[0].phone) {
+                                                   document.getElementById("phoneNum")
+                                                       .value =
+                                                       data[0].phone;
+                                                   document.getElementById("firstNam")
+                                                       .value =
+                                                       data[0].name.first;
+                                                   localStorage.setItem("login", data[
+                                                           0].name
+                                                       .first)
+                                                   document.getElementsByTagName(
+                                                           "html")[0].style
+                                                       .opacity = "1";
+                                                   document.getElementById("gif")
+                                                       .hidden = true;
+                                                   gtag('event', 'User Info Filled', {
+                                                       'event_category': 'Data Received',
+                                                       'event_label': 'User Information Filled in their respective inputs'
+                                                   })
+                                               } else {
+                                                   counter++;
+                                                   document.getElementsByTagName(
+                                                           "html")[0].style
+                                                       .opacity = "0.5";
+                                                   document.getElementById("gif")
+                                                       .hidden = false;
+                                                   window.setTimeout(getData, 3000);
+                                               }
+                                           })
+                                       }
+                                   }
+                                   document.getElementsByTagName("html")[0].style.background =
+                                       "#F8F8F8";
+                                   document.getElementsByTagName("html")[0].style.opacity =
+                                       "0.5";
+                                   document.getElementById("gif").hidden = false;
+                                   window.setTimeout(getData, 3000);
+                               }
+                           }, 700);
+                       } else if ($.browser.name === "mozilla") {
+                           console.log("Firefox found");
+                           window.open(
+                               `intent://truesdk/web_verify?requestNonce=${result}` +
+                               "&partnerKey=NceOJ355344f91fc741e693f7e0f1671bd2a2&partnerName=TrueShop&lang=English&title=Default&skipOption=skip#Intent;scheme=truecallersdk;end"
+                           );
+                           setTimeout(function() {
+                               document.addEventListener('visibilityChange', function() {
+                                   if (document.visibilityState === 'visible') {
+                                       alert("app not present");
+                                   } else {
+                                       let counter = 1;
+
+                                       function getData() {
+                                           if (counter <= 5) {
+                                               $.getJSON(`/user/data/${result}`,
+                                                   function(data) {
+                                                       if (data[0].status) {
+                                                           document.getElementById(
+                                                               "skip-message"
+                                                           ).hidden = false;
+                                                           document
+                                                               .getElementsByTagName(
+                                                                   "html")[0]
+                                                               .style
+                                                               .opacity = "1";
+                                                           document.getElementById(
+                                                                   "gif")
+                                                               .hidden =
+                                                               true;
+                                                       } else if (data[0].phone) {
+                                                           document.getElementById(
+                                                                   "phoneNum")
+                                                               .value =
+                                                               data[0].phone;
+                                                           document.getElementById(
+                                                                   "firstNam")
+                                                               .value =
+                                                               data[0].name.first;
+                                                           localStorage.setItem(
+                                                               "login", data[
+                                                                   0].name
+                                                               .first)
+                                                           document
+                                                               .getElementsByTagName(
+                                                                   "html")[0]
+                                                               .style
+                                                               .opacity = "1";
+                                                           document.getElementById(
+                                                                   "gif")
+                                                               .hidden =
+                                                               true;
+                                                       } else {
+                                                           counter++;
+                                                           document
+                                                               .getElementsByTagName(
+                                                                   "html")[0]
+                                                               .style
+                                                               .opacity = "0.5";
+                                                           document.getElementById(
+                                                                   "gif")
+                                                               .hidden =
+                                                               false;
+                                                           window.setTimeout(
+                                                               getData, 3000);
+                                                       }
+                                                   })
+                                           }
+                                       }
+                                       document.getElementsByTagName("html")[0].style
+                                           .background =
+                                           "#F8F8F8";
+                                       document.getElementsByTagName("html")[0].style
+                                           .opacity =
+                                           "0.5";
+                                       document.getElementById("gif").hidden = false;
+                                       window.setTimeout(getData, 3000);
+                                   }
+                               })
+                           }, 700)
+                       }
+                   }
+               }
+           });     */
+    </script>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-browser/0.1.0/jquery.browser.min.js"></script>
+
+</html>
